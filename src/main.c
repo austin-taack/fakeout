@@ -13,6 +13,7 @@
 #include <stdbool.h>
 
 #include "app.h"
+#include "player.h"
 #include "draw.h"
 
 // Main loop: draw background, respond to input,
@@ -20,11 +21,19 @@
 int main(int argc, char* argv[]) {
     App app;
     initApp(&app);
+
+    Player player;
+    player.x = 288;
+    player.y = 400;
+    player.texture = loadTexture(&app, "player.png");
+
     bool quitGame = false;
 
     while (!quitGame) {
 	fillWindow(&app, 0, 0, 0);
-	processInput(&quitGame);
+	processInput(&app, &quitGame);
+	movePlayer(&app, &player);
+	blitTexture(&app, player.texture, player.x, player.y);
 	updateWindow(&app);
 	SDL_Delay(16);
     }
