@@ -4,8 +4,12 @@
 void movePlayer(App* app, Player* player) {
     if (app->left && !app->right && player->x > 4) {
 	player->x -= 4;
+	player->hitbox->x0 -=4;
+	player->hitbox->x1 -= 4;
     } else if (app->right && !app->left && player->x < 572) {
 	player->x += 4;
+	player->hitbox->x0 += 4;
+	player->hitbox->x1 += 4;
     }
 }
 
