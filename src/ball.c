@@ -1,6 +1,9 @@
 #include "ball.h"
 
+#include <stdbool.h>
+
 #include "app.h"
+#include "block.h"
 
 // Move the ball in the proper direction
 void moveBall(Ball* ball) {
@@ -17,8 +20,10 @@ void moveBall(Ball* ball) {
     }
 }
 
+bool checkCollisionWithHitbox(Ball* ball, Hitbox* hitbox, int left, int right, int top, int bottom, int centerX, int centerY);
+
 // Loops through all hitboxes to check if the ball hits anything.
-void calculateBallDirection(Ball* ball, Hitbox** hitboxes, int numHitboxes) {
+void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numBlocks) {
     int left = ball->x + 24;
     int right = ball->x + 38;
     int top = ball->y + 24;
@@ -41,26 +46,47 @@ void calculateBallDirection(Ball* ball, Hitbox** hitboxes, int numHitboxes) {
 	return;
     }
 
-    for (int i = 0; i < numHitboxes; i++) {
-	Hitbox* hitbox = hitboxes[i];
-	
-	if ((centerX >= hitbox->x0) && (centerX <= hitbox->x1)) {
-	    if ((bottom >= hitbox->y0) && (top <= hitbox->y0)) {
-		// Ball collides with the top of the hitbox, needs to go up.
-		ball->yDirection = UP;
-		return;
-	    }
-	} else if ((centerY >= hitbox->y0) && (centerY <= hitbox->y1)) {
-	    if ((right >= hitbox->x0) && (right <= hitbox->x1)) {
-		// Ball collides with the left side of the hitbox, needs to go left.
-		ball->xDirection = LEFT;
-		return;
-	    } else if ((left >= hitbox->x0) && (left <= hitbox->x1)) {
-		// Ball collides with the right side of the hitbox, needs to go right.
-		ball->xDirection = RIGHT;
+    if (checkCollisionWithHitbox(ball, player->hitbox, left, right, top, bottom, centerX, centerY)) {
+	return;
+    }
+
+    for (int i = 0; i < numBlocks; i++) {
+	Block* block = blocks[i];
+	if (block->hitbox != NULL) {
+	    if (checkCollisionWithHitbox(ball, block->hitbox, left, right, top, bottom, centerX, centerY)) {
+		breakBlock(block);
 		return;
 	    }
 	}
     }
+}
+
+// Checks to see whether the ball collided with the given hitbox
+// and processes the result if necessary. Returns true if the
+// ball collided with the given hitbox, false otherwise.
+bool checkCollisionWithHitbox(Ball* ball, Hitbox* hitbox, int left, int right, int top, int bottom, int centerX, int centerY) {
+    if ((centerX >= hitbox->x0) && (centerX <= hitbox->x1)) {
+	if ((bottom >= hitbox->y0) && (bottom <= hitbox->y1)) {
+	    // Bottom of the ball collides with hitbox, needs to go up.
+	    ball->yDirection = UP;
+	    return true;
+	} else if ((top >= hitbox->y0) && (top <= hitbox->y1)) {
+	    // Top of the ball collides with hibtox, needs to go down.
+	    ball->yDirection = DOWN;
+	    return true;
+	}
+    } else if ((centerY >= hitbox->y0) && (centerY <= hitbox->y1)) {
+	if ((right >= hitbox->x0) && (right <= hitbox->x1)) {
+	    // Right side of the ball collides with hitbox, needs to go left.
+	    ball->xDirection = LEFT;
+	    return true;
+	} else if ((left >= hitbox->x0) && (left <= hitbox->x1)) {
+	    // Left side of the ball collides with hibtox, needs to go right.
+	    ball->xDirection = RIGHT;
+	    return true;
+	}
+    }
+
+    return false;
 }
 

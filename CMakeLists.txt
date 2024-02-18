@@ -12,6 +12,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 	src/draw.c
 	src/player.c
 	src/ball.c
+	src/block.c
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

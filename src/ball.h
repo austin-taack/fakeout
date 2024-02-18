@@ -5,6 +5,8 @@
 
 #include "app.h"
 #include "hitbox.h"
+#include "player.h"
+#include "block.h"
 
 // Enum for ball directions
 typedef enum {
@@ -28,6 +30,6 @@ typedef struct {
 } Ball;
 
 void moveBall(Ball* ball);
-void calculateBallDirection(Ball* ball, Hitbox** hitboxes, int numHitboxes);
+void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numBlocks);
 
 #endif
