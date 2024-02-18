@@ -1,18 +1,16 @@
 #include "ball.h"
 
-#include <stdlib.h>
-
 #include "app.h"
 
 // Move the ball in the proper direction
 void moveBall(Ball* ball) {
-    if (ball->xDirection) {
+    if (ball->xDirection == RIGHT) {
 	ball->x += 3;
     } else {
 	ball->x -= 3;
     }
 
-    if (ball->yDirection) {
+    if (ball->yDirection == DOWN) {
 	ball->y += 3;
     } else {
 	ball->y -= 3;
@@ -30,38 +28,38 @@ void calculateBallDirection(Ball* ball, Hitbox** hitboxes, int numHitboxes) {
 
     // Check if the ball is hitting a boundary
     if (left <= 4) {
-	ball->xDirection = true;
+	ball->xDirection = RIGHT;
 	return;
     } else if (right >= WINDOW_WIDTH - 5) {
-	ball->xDirection = false;
+	ball->xDirection = LEFT;
 	return;
     } else if (top <= 4) {
-	ball->yDirection = true;
+	ball->yDirection = DOWN;
 	return;
     } else if (bottom >= WINDOW_HEIGHT - 5) {
-	ball->yDirection = false;
+	ball->yDirection = UP;
 	return;
     }
 
     for (int i = 0; i < numHitboxes; i++) {
 	Hitbox* hitbox = hitboxes[i];
-
-    	if ((abs(left - hitbox->x0) <= 2) && (centerY >= hitbox->y0) && (centerY <= hitbox->y1)) {
-	    // Left side of the ball collides with hitbox, needs to go right.
-	    ball->xDirection = true;
-	    return;
-	} else if ((abs(right - hitbox->x1) <= 2) && (centerY >= hitbox->y0) && (centerY <= hitbox->y1)) {
-	    // Right side of the ball collides with hitbox, needs to go left.
-	    ball->xDirection = false;
-	    return;
-	} else if ((abs(top - hitbox->y0) <= 2) && (centerX >= hitbox->x0) && (centerX <= hitbox->x1)) {
-	    // Top of the ball collides with hitbox, needs to go down.
-	    ball->yDirection = true;
-	    return;
-	} else if ((abs(bottom - hitbox->y1) <= 2) && (centerX >= hitbox->x0) && (centerX <= hitbox->x1)) {
-	    // Bottom of the ball collides with hitbox, needs to go up.
-	    ball->yDirection = false;
-	    return;
+	
+	if ((centerX >= hitbox->x0) && (centerX <= hitbox->x1)) {
+	    if ((bottom >= hitbox->y0) && (top <= hitbox->y0)) {
+		// Ball collides with the top of the hitbox, needs to go up.
+		ball->yDirection = UP;
+		return;
+	    }
+	} else if ((centerY >= hitbox->y0) && (centerY <= hitbox->y1)) {
+	    if ((right >= hitbox->x0) && (right <= hitbox->x1)) {
+		// Ball collides with the left side of the hitbox, needs to go left.
+		ball->xDirection = LEFT;
+		return;
+	    } else if ((left >= hitbox->x0) && (left <= hitbox->x1)) {
+		// Ball collides with the right side of the hitbox, needs to go right.
+		ball->xDirection = RIGHT;
+		return;
+	    }
 	}
     }
 }

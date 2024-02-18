@@ -1,11 +1,21 @@
 #ifndef FAKEOUT_BALL
 #define FAKEOUT_BALL
 
-#include <stdbool.h>
 #include <SDL.h>
 
 #include "app.h"
 #include "hitbox.h"
+
+// Enum for ball directions
+typedef enum {
+    LEFT,
+    RIGHT
+} XDirection;
+
+typedef enum {
+    UP,
+    DOWN
+} YDirection;
 
 // Struct containing information on the ball
 typedef struct {
@@ -13,8 +23,8 @@ typedef struct {
     int y;
     SDL_Texture* texture;
 
-    bool xDirection;
-    bool yDirection;
+    XDirection xDirection;
+    YDirection yDirection;
 } Ball;
 
 void moveBall(Ball* ball);

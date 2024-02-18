@@ -2,9 +2,8 @@
 #define FAKEOUT_HITBOX
 
 typedef enum {
-    LEFT,
-    RIGHT,
-    AUTO
+    PLAYER,
+    BLOCK
 } HitboxType;
 
 
