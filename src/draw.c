@@ -13,8 +13,8 @@ void fillWindow(App* app, int r, int g, int b) {
 
 // Loads the texture specified by textureName
 // into the game.
-SDL_Texture* loadTexture(App* app, char* textureName) {
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", textureName);
+SDL_Texture* loadTexture(App* app, const char* textureName) {
+    //SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", textureName);
     char filepath[40] = "../sprites/";
     strcat(filepath, textureName);
     return IMG_LoadTexture(app->renderer, filepath);

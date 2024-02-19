@@ -10,6 +10,7 @@
 * Reference: https://www.parallelrealities.co.uk/tutorials/#shooter
 */
 
+#include <stdlib.h>
 #include <stdbool.h>
 
 #include "app.h"
@@ -37,19 +38,14 @@ int main(int argc, char* argv[]) {
     playerHitbox.y1 = player.y + 41;
     player.hitbox = &playerHitbox;
 
-    Block block;
-    block.x = 288;
-    block.y = 200;
-    block.texture = loadTexture(&app, "red_block.png");
-
-    Hitbox blockHitbox;
-    blockHitbox.x0 = block.x;
-    blockHitbox.x1 = block.x + 63;
-    blockHitbox.y0 = block.y + 16;
-    blockHitbox.y1 = block.y + 49;
-    block.hitbox = &blockHitbox;
-
-    Block* blocks[] = {&block};
+    const int numBlocks = 60;
+    Block* blocks[numBlocks];
+    initBlockRow(&app, blocks, 0, "red_block.png");
+    initBlockRow(&app, blocks, 1, "orange_block.png");
+    initBlockRow(&app, blocks, 2, "yellow_block.png");
+    initBlockRow(&app, blocks, 3, "green_block.png");
+    initBlockRow(&app, blocks, 4, "cyan_block.png");
+    initBlockRow(&app, blocks, 5, "blue_block.png");
 
     Ball ball;
     ball.x = 288;
@@ -67,16 +63,27 @@ int main(int argc, char* argv[]) {
 	movePlayer(&app, &player);
 
 	moveBall(&ball);
-	checkBallCollisions(&ball, &player, &blocks, 1);
+	checkBallCollisions(&ball, &player, blocks, numBlocks);
 
 	blitTexture(&app, player.texture, player.x, player.y);
 	blitTexture(&app, ball.texture, ball.x, ball.y);
-	if (!block.broken) {
-	    blitTexture(&app, block.texture, block.x, block.y);
+
+	for (int i = 0; i < numBlocks; i++) {
+	    Block* block = blocks[i];
+	    if (!(block->broken)) {
+		blitTexture(&app, block->texture, block->x, block->y);
+	    }
 	}
 
 	updateWindow(&app);
 	SDL_Delay(16);
+    }
+
+    for (int i = 0; i < numBlocks; i++) {
+	Block* block = blocks[i];
+	if (!(block->broken)) {
+	    freeBlock(block);
+	}
     }
 
     closeApp(&app);
