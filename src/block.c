@@ -37,18 +37,15 @@ Block* createBlock(App* app, int x, int y, const char* textureName) {
     return block;
 }
 
-// Returns block memory to the operating system.
-void freeBlock(Block* block) {
-    free(block->hitbox);
-    free(block);
-    //SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Block freed.");
-}
-
 // Remove a block from the game once it
 // is hit by the ball.
 void breakBlock(Block* block) {
-    freeBlock(block);
     block->broken = true;
-    block->hitbox = NULL;
+}
+
+// Frees the memory given to the block.
+void destroyBlock(Block* block) {
+    free(block->hitbox);
+    free(block);
 }
 

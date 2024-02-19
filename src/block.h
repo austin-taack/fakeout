@@ -16,8 +16,8 @@ typedef struct {
 } Block;
 
 void initBlockRow(App* app, Block** blocks, int rowNum, const char* textureName);
-void freeBlock(Block* block);
 void breakBlock(Block* block);
+void destroyBlock(Block* block);
 
 #endif // fakeout block
 

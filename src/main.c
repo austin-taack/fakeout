@@ -39,6 +39,9 @@ int main(int argc, char* argv[]) {
     player.hitbox = &playerHitbox;
 
     const int numBlocks = 60;
+    const int numRows = 6;
+    const int blocksPerRow = 10;
+
     Block* blocks[numBlocks];
     initBlockRow(&app, blocks, 0, "red_block.png");
     initBlockRow(&app, blocks, 1, "orange_block.png");
@@ -63,7 +66,7 @@ int main(int argc, char* argv[]) {
 	movePlayer(&app, &player);
 
 	moveBall(&ball);
-	checkBallCollisions(&ball, &player, blocks, numBlocks);
+	checkBallCollisions(&ball, &player, blocks, numRows, blocksPerRow);
 
 	blitTexture(&app, player.texture, player.x, player.y);
 	blitTexture(&app, ball.texture, ball.x, ball.y);
@@ -81,9 +84,7 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < numBlocks; i++) {
 	Block* block = blocks[i];
-	if (!(block->broken)) {
-	    freeBlock(block);
-	}
+	destroyBlock(block);
     }
 
     closeApp(&app);
