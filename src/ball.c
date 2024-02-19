@@ -75,6 +75,15 @@ bool checkCollisionWithHitbox(Ball* ball, Hitbox* hitbox, int left, int right, i
     if ((centerX >= hitbox->x0) && (centerX <= hitbox->x1)) {
 	if ((bottom >= hitbox->y0) && (bottom <= hitbox->y1)) {
 	    // Bottom of the ball collides with hitbox, needs to go up.
+	    if (hitbox->type == PLAYER) {
+		int playerMidpoint = (hitbox->x0 + hitbox->x1) / 2;
+		if (right < playerMidpoint) {
+		    ball->xDirection = LEFT;
+		} else if (left > playerMidpoint) {
+		    ball->xDirection = RIGHT;
+		}
+	    }
+
 	    ball->yDirection = UP;
 	    return true;
 	} else if ((top >= hitbox->y0) && (top <= hitbox->y1)) {
