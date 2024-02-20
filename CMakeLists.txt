@@ -5,6 +5,7 @@ set(CMAKE_C_STANDARD 11)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 add_executable(${CMAKE_PROJECT_NAME}
 	src/main.c
@@ -13,9 +14,11 @@ add_executable(${CMAKE_PROJECT_NAME}
 	src/player.c
 	src/ball.c
 	src/block.c
+	src/text.c
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
 	SDL2::SDL2
 	SDL2_image::SDL2_image
+	SDL2_ttf::SDL2_ttf
 )

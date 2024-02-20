@@ -23,7 +23,7 @@ void moveBall(Ball* ball) {
 bool checkCollisionWithHitbox(Ball* ball, Hitbox* hitbox, int left, int right, int top, int bottom, int centerX, int centerY);
 
 // Loops through all hitboxes to check if the ball hits anything.
-void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numRows, int blocksPerRow) {
+void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numRows, int blocksPerRow, int* blocksLeft, GameStatus* status) {
     int left = ball->x + 24;
     int right = ball->x + 38;
     int top = ball->y + 24;
@@ -42,7 +42,7 @@ void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numRows
 	ball->yDirection = DOWN;
 	return;
     } else if (bottom >= WINDOW_HEIGHT - 5) {
-	ball->yDirection = UP;
+	*status = LOSS;
 	return;
     }
 
@@ -61,6 +61,7 @@ void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numRows
 	    if (!block->broken) {
 		if (checkCollisionWithHitbox(ball, block->hitbox, left, right, top, bottom, centerX, centerY)) {
 		    breakBlock(block);
+		    *blocksLeft = *blocksLeft - 1;
 		    return;
 		}
 	    }

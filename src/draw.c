@@ -14,10 +14,15 @@ void fillWindow(App* app, int r, int g, int b) {
 // Loads the texture specified by textureName
 // into the game.
 SDL_Texture* loadTexture(App* app, const char* textureName) {
-    //SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", textureName);
-    char filepath[40] = "../sprites/";
+    char filepath[50] = "../sprites/";
     strcat(filepath, textureName);
-    return IMG_LoadTexture(app->renderer, filepath);
+
+    SDL_Texture* imgTexture = IMG_LoadTexture(app->renderer, filepath);
+    if (imgTexture == NULL) {
+	printf("Error loading image: %s\n", IMG_GetError());
+    }
+
+    return imgTexture;
 }
 
 // Draws the given texture at the specified
@@ -31,7 +36,25 @@ void blitTexture(App* app, SDL_Texture* texture, int x, int y) {
     dest.w *= 2;
     dest.h *= 2;
 
-    SDL_RenderCopy(app->renderer, texture, NULL, &dest);
+    if(SDL_RenderCopy(app->renderer, texture, NULL, &dest) < 0) {
+	printf("Error blitting image to screen: %s\n", SDL_GetError());
+    }
+}
+
+// Draws the given texture on the center of
+// the game window.
+void blitTextureCentered(App* app, SDL_Texture* texture) {
+    SDL_Rect dest;
+
+    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+    dest.w *= 2;
+    dest.h *= 2;
+    dest.x = (WINDOW_WIDTH - dest.w) / 2;
+    dest.y = (WINDOW_HEIGHT - dest.h) / 2;
+
+    if (SDL_RenderCopy(app->renderer, texture, NULL, &dest) <0) {
+	printf("Error blitting image to screen: %s\n", SDL_GetError());
+    }
 }
 
 // Updates the window to display any

@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 extern const int WINDOW_WIDTH;
 extern const int WINDOW_HEIGHT;
@@ -11,12 +12,22 @@ extern const int WINDOW_HEIGHT;
 typedef struct {
     SDL_Renderer* renderer;
     SDL_Window* window;
+    TTF_Font* font;
     bool left;
     bool right;
 } App;
 
+// GameStatus struct keeps track of what stage of
+// the game the player is currently in.
+typedef enum {
+    PLAYING,
+    WIN,
+    LOSS,
+    QUIT,
+} GameStatus;
+
 void initApp(App* app);
-void processInput(App* app, bool* quitGame);
+void processInput(App* app, GameStatus* gameStatus);
 void closeApp(App* app);
 
 #endif // fakeout app

@@ -30,6 +30,7 @@ typedef struct {
 } Ball;
 
 void moveBall(Ball* ball);
-void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numRows, int blocksPerRow);
+void checkBallCollisions(Ball* ball, Player* player, Block** blocks, int numRows, 
+                         int blocksPerRow, int* blocksLeft, GameStatus* status);
 
 #endif

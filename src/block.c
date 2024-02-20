@@ -32,6 +32,7 @@ Block* createBlock(App* app, int x, int y, const char* textureName) {
     blockHitbox->x1 = block->x + 63;
     blockHitbox->y0 = block->y + 16;
     blockHitbox->y1 = block->y + 49;
+    blockHitbox->type = BLOCK;
     block->hitbox = blockHitbox;
     
     return block;
