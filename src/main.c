@@ -21,9 +21,10 @@
 #include "block.h"
 #include "text.h"
 
-GameStatus runGame(App* app);
-void displayWinScreen(App* app, GameStatus* status);
-void displayLossScreen(App* app, GameStatus* status);
+void displayTitleScreen(App* app);
+void runGame(App* app);
+void displayWinScreen(App* app);
+void displayLossScreen(App* app); 
 
 // Main loop: draw background, respond to input,
 // update the window, and wait for the next frame.
@@ -31,12 +32,27 @@ int main(int argc, char* argv[]) {
     App app;
     initApp(&app);
 
-    GameStatus status = runGame(&app);
-    
-    if (status == WIN) {
-	displayWinScreen(&app, &status);
-    } else if (status == LOSS) {
-	displayLossScreen(&app, &status);
+    displayTitleScreen(&app);
+
+    while (app.status != QUIT) {
+	switch (app.status) {
+	    case PLAYING:
+		runGame(&app);
+		break;
+
+	    case WIN:
+		displayWinScreen(&app);
+		break;
+
+	    case LOSS:
+		displayLossScreen(&app);
+		break;
+
+	    default:
+		printf("Error changing game status.");
+		app.status = QUIT;
+		break;
+	}
     }
     
     closeApp(&app);
@@ -47,7 +63,7 @@ int main(int argc, char* argv[]) {
 //
 // Returns the status that the game should move
 // to next: a win, a loss, or a player-requested quit.
-GameStatus runGame(App* app) {
+void runGame(App* app) {
     Player player;
     player.x = 288;
     player.y = 400;
@@ -82,19 +98,17 @@ GameStatus runGame(App* app) {
     ball.xDirection = true;
     ball.yDirection = false;
 
-    GameStatus status = PLAYING;
-
-    while (status == PLAYING) {
+    while (app->status == PLAYING) {
 	fillWindow(app, 0, 0, 0);
 
-	processInput(app, &status);
+	processInput(app);
 	movePlayer(app, &player);
 
 	moveBall(&ball);
-	checkBallCollisions(&ball, &player, blocks, numRows, blocksPerRow, &blocksLeft, &status);
+	checkBallCollisions(app, &ball, &player, blocks, numRows, blocksPerRow, &blocksLeft);
 
 	if (blocksLeft == 0) {
-	    status = WIN;
+	    app->status = WIN;
 	}
 
 	blitTexture(app, player.texture, player.x, player.y);
@@ -115,38 +129,46 @@ GameStatus runGame(App* app) {
 	Block* block = blocks[i];
 	destroyBlock(block);
     }
-
-    return status;
 }
 
-// Displays a message letting the player
-// know they won the game.
-void displayWinScreen(App* app, GameStatus* status) {
-    fillWindow(app, 0, 0, 0);
+void setUpTextScreen(App* app, const GameStatus status, bool* newGame, const char* message1, const char* message2);
 
-    SDL_Texture* textTexture = createTextTexture(app, "YOU WIN");
-    blitTextureCentered(app, textTexture);
-
-    updateWindow(app);
-
-    while (*status == WIN) {
-	processInput(app, status);
-	SDL_Delay(16);
-    }
+// Displays the title screen prompting
+// the player to start.
+void displayTitleScreen(App* app) {
+    setUpTextScreen(app, TITLE, &app->space, "FAKEOUT", "PRESS SPACE");
 }
 
-// Displays a message letting the player know
-// they lost the game.
-void displayLossScreen(App* app, GameStatus* status) {
+// Displays a screen telling the player they won.
+void displayWinScreen(App* app) {
+    setUpTextScreen(app, WIN, &app->r, "YOU WIN", "PRESS R TO RESTART");
+}
+
+// Displays a screen telling the player they lost.
+void displayLossScreen(App* app) {
+    setUpTextScreen(app, LOSS, &app->r, "YOU LOSE", "PRESS R TO RETRY");
+}
+
+// Displays a screen with two messages to the
+// player, given by message1 and message2.
+void setUpTextScreen(App* app, const GameStatus status, bool* newGame, const char* message1, const char* message2) {
     fillWindow(app, 0, 0, 0);
 
-    SDL_Texture* textTexture = createTextTexture(app, "YOU LOSE");
-    blitTextureCentered(app, textTexture);
+    SDL_Texture* texture1 = createTextTexture(app, message1);
+    blitTextureCentered(app, texture1, 150);
 
-    updateWindow(app);
+    SDL_Texture* texture2 = createTextTexture(app, message2);
+    blitTextureCentered(app, texture2, 300);
 
-    while (*status == LOSS) {
-	processInput(app, status);
+    updateWindow(app); 
+
+    while (app->status == status) {
+	processInput(app);
+
+	if (*newGame) {
+	    app->status = PLAYING;
+	}
+
 	SDL_Delay(16);
     }
 }

@@ -34,6 +34,12 @@ void initApp(App* app) {
     if (!app->renderer) {
 	printf("Error creating renderer: %s\n", SDL_GetError());
     }
+
+    app->status = TITLE;
+    app->left = false;
+    app->right = false;
+    app->space = false;
+    app->r = false;
 }
 
 void processKeyDown(App* app, SDL_KeyboardEvent *event);
@@ -43,13 +49,13 @@ void processKeyUp(App* app, SDL_KeyboardEvent *event);
 // and update the game accordingly.
 //
 // Changes gameStatus to QUIT if the player wants to quit.
-void processInput(App* app, GameStatus* gameStatus) {
+void processInput(App* app) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
 	switch (event.type) {
 	    // Quit the game
 	    case SDL_QUIT:
-		*gameStatus = QUIT;
+		app->status = QUIT;
 		break;
 
 	    // Key has been pressed down
@@ -81,6 +87,14 @@ void processKeyDown(App* app, SDL_KeyboardEvent *event) {
 		app->right = true;
 		break;
 
+	    case SDL_SCANCODE_SPACE:
+		app->space = true;
+		break;
+
+	    case SDL_SCANCODE_R:
+		app->r = true;
+		break;
+
 	    default:
 		break;
 	}
@@ -97,6 +111,14 @@ void processKeyUp(App* app, SDL_KeyboardEvent *event) {
 
 	    case SDL_SCANCODE_RIGHT:
 		app->right = false;
+		break;
+
+	    case SDL_SCANCODE_SPACE:
+		app->space = false;
+		break;
+
+	    case SDL_SCANCODE_R:
+		app->r = false;
 		break;
 
 	    default:

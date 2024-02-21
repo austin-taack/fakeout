@@ -29,6 +29,7 @@ SDL_Texture* loadTexture(App* app, const char* textureName) {
 // x and y coordinates on the game window.
 void blitTexture(App* app, SDL_Texture* texture, int x, int y) {
     SDL_Rect dest;
+
     dest.x = x;
     dest.y = y;
 
@@ -36,23 +37,23 @@ void blitTexture(App* app, SDL_Texture* texture, int x, int y) {
     dest.w *= 2;
     dest.h *= 2;
 
-    if(SDL_RenderCopy(app->renderer, texture, NULL, &dest) < 0) {
+    if (SDL_RenderCopy(app->renderer, texture, NULL, &dest) < 0) {
 	printf("Error blitting image to screen: %s\n", SDL_GetError());
     }
 }
 
-// Draws the given texture on the center of
-// the game window.
-void blitTextureCentered(App* app, SDL_Texture* texture) {
+// Draws the given texture at the specified
+// y-value, centered along the x-axis.
+void blitTextureCentered(App* app, SDL_Texture* texture, int y) {
     SDL_Rect dest;
 
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
     dest.w *= 2;
     dest.h *= 2;
     dest.x = (WINDOW_WIDTH - dest.w) / 2;
-    dest.y = (WINDOW_HEIGHT - dest.h) / 2;
+    dest.y = y;
 
-    if (SDL_RenderCopy(app->renderer, texture, NULL, &dest) <0) {
+    if (SDL_RenderCopy(app->renderer, texture, NULL, &dest) < 0) {
 	printf("Error blitting image to screen: %s\n", SDL_GetError());
     }
 }
