@@ -1,16 +1,20 @@
 # Fakeout
 
-This is a simple game inspired by the 1976 game Breakout. The objective of the game is to break all of the
+This is a simple game inspired by the 1976 game Breakout from Atari. The objective of the game is to break all of the
 brightly-colored blocks at the top of the screen. To make this project, I relied only on the SDL library
 for creating real-time graphical applications and plain-old C code. On Unix-based systems, the game can be
 built and run using the provided shell script and CMakeLists.txt file. As I have time, I will try to update
 this project in the future. I would like to eventually add power-ups to the game as well as maybe more varied
 level design to make the experience a bit deeper.
 
+![An example screenshot of Fakeout.](screenshots/Fakeout_Screenshot.png "A Game of Fakeout")
+
 ## Installation
 
 This project was created on a Unix-based machine. Specifically, I have only tested the development setup on a Mac.
-To install the project: 
+However, the project was created using CMake to allow for cross-platform use, so it shouldn't be hard to get this
+project working as long as you download the required libraries to system locations visible to CMake. To install
+the project: 
 
 1. Download the required libraries. If using a Mac, each of these libraries can be installed with Homebrew.
     1. [SDL2](https://www.libsdl.org/)
